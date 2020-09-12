@@ -1,0 +1,8 @@
+---
+
+- name: Install Pi-Hole
+  hosts: pi_hole
+  remote_user: pi
+  roles:
+    #    - pi-hole-installation 
+    - pi-hole-chronometer

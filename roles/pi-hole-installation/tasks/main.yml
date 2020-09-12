@@ -1,0 +1,12 @@
+---
+
+- name: Download Pi-Hole installer script
+  get_url:
+    url: https://install.pi-hole.net
+    dest: "{{ ansible_user_dir }}/pi-hole-install.sh"
+    mode: '0744'
+
+- name: Execute Pi-Hole installation script
+  become: yes
+  command:
+    cmd: "bash {{ ansible_user_dir }}/pi-hole-install.sh --unattended"

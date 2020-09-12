@@ -1,0 +1,42 @@
+---
+
+- name: Ensure Git is installed
+  apt:
+    name: git
+    state: present
+  become: yes
+
+- name: Get driver for touch screen
+  git:
+    repo: https://github.com/waveshare/LCD-show.git
+    dest: "{{ ansible_user_dir }}/display-driver"
+    update: no
+  register: driver_cloned
+
+- name: Ensure correct permissions for cloned directory
+  file:
+    path: "{{ ansible_user_dir }}/display-driver/LCD35-show"
+    mode: '0755'
+
+- name: Disable automatic reboot in script
+  lineinfile:
+    path: "{{ ansible_user_dir }}/display-driver/LCD35-show"
+    regexp: '^sudo reboot'
+    line: '# sudo reboot'
+
+# Rotating display, parameter may be removed if another case is used
+- name: Start LCD display
+  shell: 
+    cmd: "./LCD35-show 180"
+    chdir: "{{ ansible_user_dir }}/display-driver/"
+  when: driver_cloned.changed
+  register: driver_installed
+
+- name: Add entry to .bashrc to start PiHole Chronometer at startup
+  blockinfile:
+    path:     
+
+- name: Reboot host to enable display
+  reboot:
+  when: driver_installed.changed
+
